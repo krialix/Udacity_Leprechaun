@@ -1,44 +1,54 @@
 package com.yoloo.apps.leprechaun;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.widget.TextView;
+
+import com.yoloo.apps.leprechaun.features.bookmarks.BookmarkFragment;
+import com.yoloo.apps.leprechaun.features.rss.RssFragment;
+import com.yoloo.apps.leprechaun.features.search.SearchFragment;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-  private TextView mTextMessage;
+  @BindView(R.id.navigation)
+  BottomNavigationView navigationView;
 
-  private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-      = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-      switch (item.getItemId()) {
-        case R.id.navigation_search:
-          mTextMessage.setText(R.string.title_search);
-          return true;
-        case R.id.navigation_bookmark:
-          mTextMessage.setText(R.string.title_bookmark);
-          return true;
-        case R.id.navigation_rss:
-          mTextMessage.setText(R.string.title_rss);
-          return true;
-      }
-      return false;
-    }
-  };
+  private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener =
+      item -> {
+        switch (item.getItemId()) {
+          case R.id.navigation_search:
+            return loadFragment(SearchFragment.newInstance());
+          case R.id.navigation_bookmark:
+            return loadFragment(BookmarkFragment.newInstance());
+          case R.id.navigation_rss:
+            return loadFragment(RssFragment.newInstance());
+        }
+        return false;
+      };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    ButterKnife.bind(this);
 
-    mTextMessage = (TextView) findViewById(R.id.message);
-    BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-    navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    loadFragment(SearchFragment.newInstance());
+
+    navigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
   }
 
+  private boolean loadFragment(Fragment fragment) {
+    if (fragment != null) {
+      getSupportFragmentManager()
+          .beginTransaction()
+          .replace(R.id.fragment_container, fragment)
+          .commit();
+      return true;
+    }
+    return false;
+  }
 }

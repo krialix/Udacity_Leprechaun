@@ -4,9 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.yoloo.apps.leprechaun.data.repository.SearchRepository;
-import com.yoloo.apps.leprechaun.data.vo.CityNameResult;
-
-import java.util.List;
+import com.yoloo.apps.leprechaun.data.vo.Result;
 
 import javax.inject.Inject;
 
@@ -19,11 +17,11 @@ class SearchViewModel extends ViewModel {
     this.repository = repository;
   }
 
-  LiveData<List<CityNameResult>> searchFirstCityName(String name) {
+  LiveData<Result> searchFirstCityName(String name) {
     return repository.searchFirstCityName(name);
   }
 
-  LiveData<List<CityNameResult>> searchSecondCityName(String name) {
+  LiveData<Result> searchSecondCityName(String name) {
     return repository.searchSecondCityName(name);
   }
 }

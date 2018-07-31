@@ -6,70 +6,81 @@ import android.os.AsyncTask;
 
 import com.yoloo.apps.leprechaun.data.network.LeprechaunService;
 import com.yoloo.apps.leprechaun.data.vo.CityNameResult;
+import com.yoloo.apps.leprechaun.data.vo.Result;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import retrofit2.Response;
-
 @Singleton
 public class SearchRepository {
-
-  private final LeprechaunService leprechaunService;
   private final SearchAsyncTask asyncTask;
-  private final MutableLiveData<List<CityNameResult>> cityNameResultsLiveData;
 
   @Inject
-  public SearchRepository(LeprechaunService leprechaunService) {
-    this.leprechaunService = leprechaunService;
-    this.cityNameResultsLiveData = new MutableLiveData<>();
-    this.asyncTask = new SearchAsyncTask(this.leprechaunService, this.cityNameResultsLiveData);
+  public SearchRepository(SearchAsyncTask asyncTask) {
+    this.asyncTask = asyncTask;
   }
 
-  public LiveData<List<CityNameResult>> searchFirstCityName(String name) {
+  public LiveData<Result> searchFirstCityName(String name) {
+    MutableLiveData<Result> liveData = new MutableLiveData<>();
+    asyncTask.setLiveData(liveData);
     asyncTask.execute(name);
-    return cityNameResultsLiveData;
+    return liveData;
   }
 
-  public LiveData<List<CityNameResult>> searchSecondCityName(String name) {
+  public LiveData<Result> searchSecondCityName(String name) {
+    MutableLiveData<Result> liveData = new MutableLiveData<>();
+    asyncTask.setLiveData(liveData);
     asyncTask.execute(name);
-    return cityNameResultsLiveData;
+    return liveData;
   }
 
-  public LiveData<Boolean> compareCities(String city1, String city2) {
-    return null;
+  public LiveData<Result> compareCities(String city1, String city2) {
+    return new MutableLiveData<>();
   }
 
-  static class SearchAsyncTask extends AsyncTask<String, Void, List<CityNameResult>> {
-
+  static class SearchAsyncTask extends AsyncTask<String, Void, Result> {
     private final LeprechaunService leprechaunService;
-    private final MutableLiveData<List<CityNameResult>> listLiveData;
+    private MutableLiveData<Result> liveData;
 
-    private SearchAsyncTask(
-        LeprechaunService leprechaunService, MutableLiveData<List<CityNameResult>> listLiveData) {
+    @Inject
+    SearchAsyncTask(LeprechaunService leprechaunService) {
       this.leprechaunService = leprechaunService;
-      this.listLiveData = listLiveData;
+    }
+
+    void setLiveData(MutableLiveData<Result> liveData) {
+      this.liveData = liveData;
     }
 
     @Override
-    protected List<CityNameResult> doInBackground(String... strings) {
+    protected Result doInBackground(String... strings) {
       try {
-        Response<List<CityNameResult>> response =
-            leprechaunService.searchCityName(strings[0]).execute();
-        return response.body();
+        List<CityNameResult> results =
+            leprechaunService.searchCityName(strings[0]).execute().body();
+
+        if (results == null) {
+          return Result.Success.create(Collections.<String>emptyList());
+        }
+
+        List<String> cities = new ArrayList<>(results.size());
+        for (CityNameResult result : results) {
+          cities.add(result.getLabel());
+        }
+
+        return Result.Success.create(cities);
       } catch (IOException e) {
-        e.printStackTrace();
-        return Collections.emptyList();
+        return Result.Failure.create(e);
       }
     }
 
     @Override
-    protected void onPostExecute(List<CityNameResult> cityNameResults) {
-      listLiveData.setValue(cityNameResults);
+    protected void onPostExecute(Result result) {
+      super.onPostExecute(result);
+      liveData.setValue(result);
     }
   }
 }

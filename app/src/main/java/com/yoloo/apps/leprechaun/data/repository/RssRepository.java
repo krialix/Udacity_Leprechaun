@@ -21,26 +21,29 @@ import javax.inject.Singleton;
 @Singleton
 public class RssRepository {
   private final RssAsyncTask asyncTask;
-  private final LiveData<Result> liveData;
 
   @Inject
-  public RssRepository(RssAsyncTask asyncTask, LiveData<Result> liveData) {
+  public RssRepository(RssAsyncTask asyncTask) {
     this.asyncTask = asyncTask;
-    this.liveData = liveData;
   }
 
   public LiveData<Result> getRss() {
+    MutableLiveData<Result> liveData = new MutableLiveData<>();
+    asyncTask.setLiveData(liveData);
     asyncTask.execute();
     return liveData;
   }
 
   static final class RssAsyncTask extends AsyncTask<Void, Void, Result> {
     private final LeprechaunService service;
-    private final MutableLiveData<Result> liveData;
+    private MutableLiveData<Result> liveData;
 
     @Inject
-    RssAsyncTask(LeprechaunService service, MutableLiveData<Result> liveData) {
+    RssAsyncTask(LeprechaunService service) {
       this.service = service;
+    }
+
+    void setLiveData(MutableLiveData<Result> liveData) {
       this.liveData = liveData;
     }
 

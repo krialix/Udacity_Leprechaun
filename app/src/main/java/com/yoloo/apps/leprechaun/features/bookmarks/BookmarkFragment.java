@@ -1,6 +1,7 @@
 package com.yoloo.apps.leprechaun.features.bookmarks;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.yoloo.apps.leprechaun.LeprechaunApplication;
 import com.yoloo.apps.leprechaun.R;
 import com.yoloo.apps.leprechaun.data.vo.Result;
 
@@ -47,6 +49,12 @@ public class BookmarkFragment extends Fragment {
     View view = inflater.inflate(R.layout.fragment_bookmark, container, false);
     unbinder = ButterKnife.bind(this, view);
     return view;
+  }
+
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+    ((LeprechaunApplication) getActivity().getApplication()).getAppComponent().inject(this);
   }
 
   @Override

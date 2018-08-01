@@ -9,6 +9,7 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.converter.moshi.MoshiConverterFactory;
 
 @Module
 public class NetworkModule {
@@ -27,6 +28,7 @@ public class NetworkModule {
     return new Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(client)
+        .addConverterFactory(MoshiConverterFactory.create())
         .addConverterFactory(HtmlConverterFactory.create(BASE_URL))
         .build()
         .create(LeprechaunService.class);

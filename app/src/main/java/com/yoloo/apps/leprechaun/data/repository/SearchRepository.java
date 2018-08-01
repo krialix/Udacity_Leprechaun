@@ -18,21 +18,15 @@ import javax.inject.Singleton;
 
 @Singleton
 public class SearchRepository {
-  private final SearchAsyncTask asyncTask;
+  private final LeprechaunService leprechaunService;
 
   @Inject
-  public SearchRepository(SearchAsyncTask asyncTask) {
-    this.asyncTask = asyncTask;
+  public SearchRepository(LeprechaunService leprechaunService) {
+    this.leprechaunService = leprechaunService;
   }
 
-  public LiveData<Result> searchFirstCityName(String name) {
-    MutableLiveData<Result> liveData = new MutableLiveData<>();
-    asyncTask.setLiveData(liveData);
-    asyncTask.execute(name);
-    return liveData;
-  }
-
-  public LiveData<Result> searchSecondCityName(String name) {
+  public LiveData<Result> searchCityName(String name) {
+    SearchAsyncTask asyncTask = new SearchAsyncTask(leprechaunService);
     MutableLiveData<Result> liveData = new MutableLiveData<>();
     asyncTask.setLiveData(liveData);
     asyncTask.execute(name);
@@ -43,6 +37,7 @@ public class SearchRepository {
     return new MutableLiveData<>();
   }
 
+  @Singleton
   static class SearchAsyncTask extends AsyncTask<String, Void, Result> {
     private final LeprechaunService leprechaunService;
     private MutableLiveData<Result> liveData;

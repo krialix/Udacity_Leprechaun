@@ -1,5 +1,6 @@
 package com.yoloo.apps.leprechaun.features.rss;
 
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import com.yoloo.apps.leprechaun.data.vo.Result;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -30,6 +33,8 @@ public class RssFragment extends Fragment {
 
   @BindView(R.id.rv_rss)
   RecyclerView rvRss;
+
+  @Inject ViewModelProvider.Factory viewModelFactory;
 
   private RssAdapter rssAdapter;
 
@@ -62,7 +67,7 @@ public class RssFragment extends Fragment {
     super.onViewCreated(view, savedInstanceState);
     setupRecyclerView();
 
-    RssViewModel viewModel = ViewModelProviders.of(this).get(RssViewModel.class);
+    RssViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(RssViewModel.class);
 
     viewModel
         .getRss()

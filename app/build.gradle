@@ -52,6 +52,7 @@ dependencies {
     // Network
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
 
     // Firebase
     implementation 'com.google.firebase:firebase-ads:15.0.1'
@@ -59,14 +60,15 @@ dependencies {
 
     // Other
     implementation 'org.jsoup:jsoup:1.11.3'
+
     implementation 'com.google.dagger:dagger:2.16'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.16'
+
     implementation 'com.github.slashrootv200:retrofit-html-converter:0.0.2'
     implementation 'com.otaliastudios:autocomplete:1.1.0'
 
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
 
     compileOnly "com.google.auto.value:auto-value-annotations:$autoValueVersion"
     annotationProcessor "com.google.auto.value:auto-value:$autoValueVersion"

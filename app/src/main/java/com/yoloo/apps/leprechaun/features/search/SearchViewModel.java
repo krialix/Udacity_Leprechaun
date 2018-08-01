@@ -8,7 +8,7 @@ import com.yoloo.apps.leprechaun.data.vo.Result;
 
 import javax.inject.Inject;
 
-class SearchViewModel extends ViewModel {
+public class SearchViewModel extends ViewModel {
 
   private final SearchRepository repository;
 
@@ -17,11 +17,7 @@ class SearchViewModel extends ViewModel {
     this.repository = repository;
   }
 
-  LiveData<Result> searchFirstCityName(String name) {
-    return repository.searchFirstCityName(name);
-  }
-
-  LiveData<Result> searchSecondCityName(String name) {
-    return repository.searchSecondCityName(name);
+  LiveData<Result> searchCityName(String name) {
+    return repository.searchCityName(name);
   }
 }

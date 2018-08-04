@@ -9,7 +9,6 @@ import com.yoloo.apps.leprechaun.data.vo.Result;
 import javax.inject.Inject;
 
 public class RssViewModel extends ViewModel {
-
   private final RssRepository rssRepository;
 
   @Inject

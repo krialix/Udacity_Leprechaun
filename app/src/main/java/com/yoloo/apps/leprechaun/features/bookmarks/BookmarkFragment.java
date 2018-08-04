@@ -10,16 +10,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.yoloo.apps.leprechaun.LeprechaunApplication;
 import com.yoloo.apps.leprechaun.R;
-import com.yoloo.apps.leprechaun.data.vo.Result;
-
-import java.util.List;
+import com.yoloo.apps.leprechaun.features.comparison.ComparisonActivity;
 
 import javax.inject.Inject;
 
@@ -34,7 +32,12 @@ public class BookmarkFragment extends Fragment {
   @BindView(R.id.rv_bookmark)
   RecyclerView rvBookmark;
 
+  @BindView(R.id.pb_loading)
+  ProgressBar progressBar;
+
   @Inject ViewModelProvider.Factory viewModelFactory;
+
+  private BookmarkViewModel viewModel;
 
   private BookmarkAdapter bookmarkAdapter;
 
@@ -67,21 +70,17 @@ public class BookmarkFragment extends Fragment {
     super.onViewCreated(view, savedInstanceState);
     setupRecyclerView();
 
-    BookmarkViewModel viewModel =
-        ViewModelProviders.of(this, viewModelFactory).get(BookmarkViewModel.class);
+    setContentVisible(false);
+
+    viewModel = ViewModelProviders.of(this, viewModelFactory).get(BookmarkViewModel.class);
 
     viewModel
         .getBookmarks()
         .observe(
             this,
-            result -> {
-              if (result instanceof Result.Success) {
-                Result.Success<List<String>> success = (Result.Success<List<String>>) result;
-                bookmarkAdapter.submitList(success.data());
-              } else {
-                Result.Failure failure = (Result.Failure) result;
-                Log.e(TAG, "onViewCreated: ", failure.error());
-              }
+            list -> {
+              bookmarkAdapter.submitList(list);
+              setContentVisible(true);
             });
   }
 
@@ -98,5 +97,30 @@ public class BookmarkFragment extends Fragment {
         new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
     rvBookmark.setItemAnimator(new DefaultItemAnimator());
     rvBookmark.setAdapter(bookmarkAdapter);
+
+    bookmarkAdapter.setOnBookmarkRemoveListener(
+        id -> {
+          viewModel.unBookmark(id);
+
+          viewModel
+              .getBookmarks()
+              .observe(
+                  this,
+                  list -> {
+                    bookmarkAdapter.submitList(list);
+                    setContentVisible(true);
+                  });
+        });
+
+    bookmarkAdapter.setOnBookmarkClickListener(
+        comparison -> {
+          String[] split = comparison.getId().split("_");
+          ComparisonActivity.start(getContext(), split[0], split[2], split[1], split[3]);
+        });
+  }
+
+  private void setContentVisible(boolean visible) {
+    rvBookmark.setVisibility(visible ? View.VISIBLE : View.GONE);
+    progressBar.setVisibility(visible ? View.GONE : View.VISIBLE);
   }
 }

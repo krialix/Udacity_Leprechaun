@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.yoloo.apps.leprechaun.LeprechaunApplication;
 import com.yoloo.apps.leprechaun.R;
@@ -33,6 +34,9 @@ public class RssFragment extends Fragment {
 
   @BindView(R.id.rv_rss)
   RecyclerView rvRss;
+
+  @BindView(R.id.pb_loading)
+  ProgressBar progressBar;
 
   @Inject ViewModelProvider.Factory viewModelFactory;
 
@@ -66,6 +70,7 @@ public class RssFragment extends Fragment {
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     setupRecyclerView();
+    setContentVisible(false);
 
     RssViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(RssViewModel.class);
 
@@ -77,6 +82,7 @@ public class RssFragment extends Fragment {
               if (result instanceof Result.Success) {
                 Result.Success<List<String>> success = (Result.Success<List<String>>) result;
                 rssAdapter.submitList(success.data());
+                setContentVisible(true);
               } else {
                 Result.Failure failure = (Result.Failure) result;
                 Log.e(TAG, "onViewCreated: ", failure.error());
@@ -97,5 +103,10 @@ public class RssFragment extends Fragment {
         new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
     rvRss.setItemAnimator(new DefaultItemAnimator());
     rvRss.setAdapter(rssAdapter);
+  }
+
+  private void setContentVisible(boolean visible) {
+    rvRss.setVisibility(visible ? View.VISIBLE : View.GONE);
+    progressBar.setVisibility(visible ? View.GONE : View.VISIBLE);
   }
 }

@@ -4,7 +4,6 @@
     <string name="title_bookmark">Bookmarks</string>
     <string name="title_rss">Recents</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_hint_first_city">1. city</string>
     <string name="search_compare_with">Compare with</string>
@@ -12,4 +11,6 @@
     <string name="search_action_compare">Compare</string>
     <string name="rss_recent_changes">Recent changes</string>
     <string name="bookmark_bookmarks_title">Bookmarks</string>
+    <string name="search_desc_app_logo">app logo</string>
+    <string name="comparison_toggle_info">Toggle info</string>
 </resources>

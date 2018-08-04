@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tv_rss_content"
+    android:id="@+id/tv_comparison_title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="4dp"
+    android:background="@color/rowTitleColor"
+    android:paddingBottom="8dp"
     android:paddingEnd="16dp"
     android:paddingStart="16dp"
-    android:paddingTop="4dp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-    tools:text="Average Monthly Net Salary (After Tax) in Tbilisi is 500.00GEL (about 10 minutes ago)" />
+    android:paddingTop="8dp"
+    android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
+    tools:text="@tools:sample/cities" />

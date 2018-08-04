@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import com.yoloo.apps.leprechaun.di.LeprechaunViewModelFactory;
 import com.yoloo.apps.leprechaun.di.ViewModelKey;
 import com.yoloo.apps.leprechaun.features.bookmarks.BookmarkViewModel;
+import com.yoloo.apps.leprechaun.features.comparison.ComparisonViewModel;
 import com.yoloo.apps.leprechaun.features.rss.RssViewModel;
 import com.yoloo.apps.leprechaun.features.search.SearchViewModel;
 
@@ -30,6 +31,11 @@ public abstract class ViewModelModule {
   @IntoMap
   @ViewModelKey(RssViewModel.class)
   abstract ViewModel bindRssViewModel(RssViewModel viewModel);
+
+  @Binds
+  @IntoMap
+  @ViewModelKey(ComparisonViewModel.class)
+  abstract ViewModel bindComparisonViewModel(ComparisonViewModel viewModel);
 
   @Binds
   abstract ViewModelProvider.Factory bindViewModelFactory(LeprechaunViewModelFactory factory);

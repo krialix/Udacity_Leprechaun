@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,11 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.otaliastudios.autocomplete.Autocomplete;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
-import com.otaliastudios.autocomplete.RecyclerViewPresenter;
 import com.yoloo.apps.leprechaun.LeprechaunApplication;
 import com.yoloo.apps.leprechaun.R;
+import com.yoloo.apps.leprechaun.features.comparison.ComparisonActivity;
 
 import javax.inject.Inject;
 
@@ -49,8 +52,10 @@ public class SearchFragment extends Fragment {
 
   @Inject ViewModelProvider.Factory viewModelFactory;
 
+  private FirebaseAnalytics firebaseAnalytics;
   private SearchViewModel viewModel;
   private Unbinder unbinder;
+  private InterstitialAd interstitialAd;
 
   public SearchFragment() {
     // Required empty public constructor
@@ -77,6 +82,10 @@ public class SearchFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    interstitialAd = new InterstitialAd(getContext());
+    interstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+    interstitialAd.loadAd(new AdRequest.Builder().build());
+
     Autocomplete.<String>on(etFirstCity)
         .with(new ColorDrawable(Color.WHITE))
         .with(6f)
@@ -120,6 +129,7 @@ public class SearchFragment extends Fragment {
   public void onAttach(Context context) {
     super.onAttach(context);
     ((LeprechaunApplication) getActivity().getApplication()).getAppComponent().inject(this);
+    firebaseAnalytics = FirebaseAnalytics.getInstance(context);
   }
 
   @Override
@@ -135,5 +145,35 @@ public class SearchFragment extends Fragment {
 
     tilFirstCity.setError(TextUtils.isEmpty(firstCity) ? "You must enter a city name" : null);
     tilSecondCity.setError(TextUtils.isEmpty(secondCity) ? "You must enter a city name" : null);
+
+    if (!TextUtils.isEmpty(firstCity) && !TextUtils.isEmpty(secondCity)) {
+      String[] split1 = firstCity.split(",");
+      String[] split2 = secondCity.split(",");
+
+      String city1 = split1[0].trim();
+      String country1 = split1[1].trim();
+      String city2 = split2[0].trim();
+      String country2 = split2[1].trim();
+
+      String id = country1 + "_" + city1 + ":" + country2 + "_" + city2;
+
+      Bundle bundle = new Bundle();
+      bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+      bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "search");
+      firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
+      if (interstitialAd.isLoaded()) {
+        interstitialAd.show();
+      } else {
+        ComparisonActivity.start(getContext(), country1, country2, city1, city2);
+      }
+
+      interstitialAd.setAdListener(new AdListener() {
+        @Override
+        public void onAdClosed() {
+          ComparisonActivity.start(getContext(), country1, country2, city1, city2);
+        }
+      });
+    }
   }
 }

@@ -24,13 +24,17 @@
         </activity>
         <activity
             android:name=".features.comparison.ComparisonActivity"
-            android:parentActivityName=".MainActivity">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:parentActivityName=".MainActivity" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
+        <receiver android:name=".features.widget.BookmarksWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/bookmarks_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

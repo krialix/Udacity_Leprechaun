@@ -8,6 +8,7 @@ import com.yoloo.apps.leprechaun.features.bookmarks.BookmarkFragment;
 import com.yoloo.apps.leprechaun.features.comparison.ComparisonActivity;
 import com.yoloo.apps.leprechaun.features.rss.RssFragment;
 import com.yoloo.apps.leprechaun.features.search.SearchFragment;
+import com.yoloo.apps.leprechaun.features.widget.BookmarksWidgetProvider;
 
 import javax.inject.Singleton;
 
@@ -25,6 +26,8 @@ public interface AppComponent {
   void inject(RssFragment fragment);
 
   void inject(ComparisonActivity activity);
+
+  void inject(BookmarksWidgetProvider bookmarksWidgetProvider);
 
   @Component.Builder
   public interface Builder {

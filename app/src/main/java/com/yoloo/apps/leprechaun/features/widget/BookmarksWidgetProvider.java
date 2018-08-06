@@ -34,28 +34,26 @@ public class BookmarksWidgetProvider extends AppWidgetProvider {
         PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
     RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.bookmarks_widget);
+
     views.setOnClickPendingIntent(R.id.ll_widget_container, pendingIntent);
     views.removeAllViews(R.id.ll_widget_container);
 
     for (Comparison comparison : comparisons) {
-      RemoteViews remoteViews =
+      RemoteViews lineView =
           new RemoteViews(context.getPackageName(), R.layout.item_bookmark_widget);
 
       String line = ComparisonUtil.formatComparison(comparison);
-      remoteViews.setTextViewText(R.id.tv_bookmark_content, line);
-      views.addView(R.id.ll_widget_container, remoteViews);
+      Log.i(TAG, "updateAppWidget: " + line);
+      lineView.setTextViewText(R.id.tv_bookmark_content, line);
+      views.addView(R.id.ll_widget_container, lineView);
     }
 
     appWidgetManager.updateAppWidget(appWidgetId, views);
   }
 
   @Override
-  public void onEnabled(Context context) {
-    ((LeprechaunApplication) context.getApplicationContext()).getAppComponent().inject(this);
-  }
-
-  @Override
   public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    ((LeprechaunApplication) context.getApplicationContext()).getAppComponent().inject(this);
     searchRepository
         .listBookmarks()
         .observeForever(

@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tv_bookmark_content"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:drawablePadding="16dp"
-    android:drawableStart="@drawable/ic_location_city_black_24dp"
-    android:foreground="?selectableItemBackground"
-    android:gravity="center_vertical"
-    android:paddingBottom="8dp"
-    android:paddingEnd="16dp"
-    android:paddingStart="16dp"
-    android:paddingTop="8dp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-    tools:text="@tools:sample/lorem" />
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_bookmark_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_location_city_black_24dp"
+        android:foreground="?selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingBottom="8dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        tools:text="@tools:sample/lorem" />
+
+</FrameLayout>

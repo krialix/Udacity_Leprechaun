@@ -1,13 +1,16 @@
 package com.yoloo.apps.leprechaun;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.yoloo.apps.leprechaun.features.bookmarks.BookmarkFragment;
 import com.yoloo.apps.leprechaun.features.rss.RssFragment;
 import com.yoloo.apps.leprechaun.features.search.SearchFragment;
+import com.yoloo.apps.leprechaun.features.widget.BookmarksWidgetProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +42,16 @@ public class MainActivity extends AppCompatActivity {
     loadFragment(SearchFragment.newInstance());
 
     navigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
+  }
+
+  @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    int source = intent.getIntExtra(BookmarksWidgetProvider.KEY_SOURCE, 0);
+    if (source == BookmarksWidgetProvider.SOURCE_WIDGET) {
+      loadFragment(BookmarkFragment.newInstance());
+      navigationView.setSelectedItemId(R.id.navigation_bookmark);
+    }
   }
 
   private boolean loadFragment(Fragment fragment) {

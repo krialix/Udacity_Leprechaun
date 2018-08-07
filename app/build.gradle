@@ -1,7 +1,12 @@
 apply plugin: 'com.android.application'
 
+def keystorePropertiesFile = rootProject.file("./keystore/keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     compileSdkVersion 27
+
     defaultConfig {
         applicationId "com.yoloo.apps.leprechaun"
         minSdkVersion 21
@@ -10,15 +15,26 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(keystoreProperties['RELEASE_STORE_FILE'])
+            storePassword keystoreProperties['RELEASE_STORE_PASSWORD']
+            keyAlias keystoreProperties['RELEASE_KEY_ALIAS']
+            keyPassword keystoreProperties['RELEASE_KEY_PASSWORD']
+        }
     }
 
     flavorDimensions 'mode'
@@ -28,11 +44,13 @@ android {
             dimension 'mode'
             applicationIdSuffix ".free"
             versionNameSuffix "-free"
+            signingConfig signingConfigs.release
         }
         paid {
             dimension 'mode'
             applicationIdSuffix ".paid"
             versionNameSuffix "-paid"
+            signingConfig signingConfigs.release
         }
     }
 }

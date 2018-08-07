@@ -20,6 +20,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class BookmarksWidgetProvider extends AppWidgetProvider {
+  public static final String KEY_SOURCE = "KEY_SOURCE";
+  public static final int SOURCE_WIDGET = 100;
+
   private static final String TAG = "BookmarksWidgetProvider";
 
   @Inject SearchRepository searchRepository;
@@ -30,6 +33,7 @@ public class BookmarksWidgetProvider extends AppWidgetProvider {
       int appWidgetId,
       List<Comparison> comparisons) {
     Intent intent = new Intent(context, MainActivity.class);
+    intent.putExtra(KEY_SOURCE, SOURCE_WIDGET);
     PendingIntent pendingIntent =
         PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -44,7 +48,7 @@ public class BookmarksWidgetProvider extends AppWidgetProvider {
 
       String line = ComparisonUtil.formatComparison(comparison);
       Log.i(TAG, "updateAppWidget: " + line);
-      lineView.setTextViewText(R.id.tv_bookmark_content, line);
+      lineView.setTextViewText(R.id.tv_widget_bookmark_content, line);
       views.addView(R.id.ll_widget_container, lineView);
     }
 
@@ -59,7 +63,6 @@ public class BookmarksWidgetProvider extends AppWidgetProvider {
         .observeForever(
             comparisons -> {
               if (comparisons != null) {
-                Log.i(TAG, "onUpdate: " + comparisons.size());
                 for (int appWidgetId : appWidgetIds) {
                   updateAppWidget(context, appWidgetManager, appWidgetId, comparisons);
                 }

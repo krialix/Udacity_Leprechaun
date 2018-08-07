@@ -5,6 +5,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -37,6 +39,9 @@ public class ComparisonActivity extends AppCompatActivity {
   private static final String KEY_CITY_1 = "CITY_1";
   private static final String KEY_CITY_2 = "CITY_2";
 
+  private static final String KEY_INSTANCE_STATE_RV_POSITION = "KEY_INSTANCE_STATE_RV_POSITION";
+  private static final String KEY_DATA_HASH_CODE = "DATA_HASH_CODE";
+
   @BindView(R.id.toolbar)
   Toolbar toolbar;
 
@@ -65,6 +70,10 @@ public class ComparisonActivity extends AppCompatActivity {
 
   @Inject ComparisonAdapter adapter;
 
+  private RecyclerView.LayoutManager layoutManager;
+
+  private Parcelable layoutManagerSavedState;
+
   public static void start(
       Context context, String country1, String country2, String city1, String city2) {
     Intent starter = new Intent(context, ComparisonActivity.class);
@@ -72,6 +81,7 @@ public class ComparisonActivity extends AppCompatActivity {
     starter.putExtra(KEY_COUNTRY_2, country2);
     starter.putExtra(KEY_CITY_1, city1);
     starter.putExtra(KEY_CITY_2, city2);
+
     context.startActivity(starter);
   }
 
@@ -82,8 +92,7 @@ public class ComparisonActivity extends AppCompatActivity {
     ButterKnife.bind(this);
     ((LeprechaunApplication) getApplication()).getAppComponent().inject(this);
 
-    setSupportActionBar(toolbar);
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    setupToolbar();
 
     setContentVisible(false);
 
@@ -95,9 +104,14 @@ public class ComparisonActivity extends AppCompatActivity {
     String city1 = getOrDefault(intent.getStringExtra(KEY_CITY_1), "Izmir");
     String city2 = getOrDefault(intent.getStringExtra(KEY_CITY_2), "Ankara");
 
-    tvCities.setText(city1 + " vs " + city2);
+    tvCities.setText(getString(R.string.city_vs, city1, city2));
 
     tvInfoToggle.setOnClickListener(v -> expandableLayout.toggle(true));
+
+    if (savedInstanceState != null) {
+      Log.i(TAG, "onCreate: " + "Saved instance is not empty");
+      layoutManagerSavedState = savedInstanceState.getParcelable(KEY_INSTANCE_STATE_RV_POSITION);
+    }
 
     ComparisonViewModel viewModel =
         ViewModelProviders.of(this, viewModelFactory).get(ComparisonViewModel.class);
@@ -108,10 +122,12 @@ public class ComparisonActivity extends AppCompatActivity {
             this,
             comparison -> {
               if (comparison != null) {
-                Log.i(TAG, "result: ");
                 adapter.submitList(comparison.getRows());
                 tvInfo.setText(comparison.getInfo());
                 setContentVisible(true);
+
+                // wait for the next frame to restore manager position.
+                rvComparison.post(this::restoreLayoutManagerPosition);
               }
             });
 
@@ -128,13 +144,29 @@ public class ComparisonActivity extends AppCompatActivity {
         });
   }
 
+  private void setupToolbar() {
+    setSupportActionBar(toolbar);
+    ActionBar ab = getSupportActionBar();
+    if (ab != null) {
+      ab.setDisplayHomeAsUpEnabled(true);
+    }
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    Log.i(TAG, "onSaveInstanceState: " + "RecyclerView state saved.");
+    outState.putParcelable(KEY_INSTANCE_STATE_RV_POSITION, layoutManager.onSaveInstanceState());
+  }
+
   private void setContentVisible(boolean visible) {
     rvComparison.setVisibility(visible ? View.VISIBLE : View.GONE);
     progressBar.setVisibility(visible ? View.GONE : View.VISIBLE);
   }
 
   private void setupRecyclerView() {
-    rvComparison.setLayoutManager(new LinearLayoutManager(this));
+    layoutManager = new LinearLayoutManager(this);
+    rvComparison.setLayoutManager(layoutManager);
     rvComparison.setItemAnimator(new DefaultItemAnimator());
     rvComparison.addItemDecoration(
         new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
@@ -143,5 +175,12 @@ public class ComparisonActivity extends AppCompatActivity {
 
   private String getOrDefault(String actual, String defaultValue) {
     return TextUtils.isEmpty(actual) ? defaultValue : actual;
+  }
+
+  private void restoreLayoutManagerPosition() {
+    if (layoutManagerSavedState != null) {
+      Log.i(TAG, "onCreate: " + "Restore state");
+      layoutManager.onRestoreInstanceState(layoutManagerSavedState);
+    }
   }
 }

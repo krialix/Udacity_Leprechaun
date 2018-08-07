@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "895908843855",
+    "firebase_url": "https://leprechaun-33abf.firebaseio.com",
+    "project_id": "leprechaun-33abf",
+    "storage_bucket": "leprechaun-33abf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:895908843855:android:1bc162c316773d59",
+        "android_client_info": {
+          "package_name": "com.yoloo.apps.leprechaun.free"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "895908843855-c8dn8moj107i0kq998h5knpd7hqiscv1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpQ-gqQPqJDaipHft0LN8EIHyarGFbKUA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:895908843855:android:94a8f59b0e8bc0a6",
+        "android_client_info": {
+          "package_name": "com.yoloo.apps.leprechaun.paid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "895908843855-c8dn8moj107i0kq998h5knpd7hqiscv1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpQ-gqQPqJDaipHft0LN8EIHyarGFbKUA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

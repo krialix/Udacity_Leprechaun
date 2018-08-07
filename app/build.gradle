@@ -16,18 +16,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     signingConfigs {
         release {
             storeFile file(keystoreProperties['RELEASE_STORE_FILE'])
@@ -37,6 +25,20 @@ android {
         }
     }
 
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     flavorDimensions 'mode'
 
     productFlavors {
@@ -44,13 +46,11 @@ android {
             dimension 'mode'
             applicationIdSuffix ".free"
             versionNameSuffix "-free"
-            signingConfig signingConfigs.release
         }
         paid {
             dimension 'mode'
             applicationIdSuffix ".paid"
             versionNameSuffix "-paid"
-            signingConfig signingConfigs.release
         }
     }
 }
@@ -59,20 +59,21 @@ def supportLibVersion = "27.1.1"
 def archComponentsVersion = "1.1.1"
 def autoValueVersion = "1.6.2"
 
+configurations.all {
+    resolutionStrategy {
+        force "com.android.support:animated-vector-drawable:$supportLibVersion"
+        force "com.android.support:customtabs:$supportLibVersion"
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Android
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
-    implementation "com.android.support:support-core-utils:$supportLibVersion"
-    implementation "com.android.support:support-compat:$supportLibVersion"
-    implementation "com.android.support:support-core-ui:$supportLibVersion"
     implementation "com.android.support:support-v4:$supportLibVersion"
-    implementation "com.android.support:animated-vector-drawable:$supportLibVersion"
-    implementation "com.android.support:customtabs:$supportLibVersion"
     implementation "com.android.support:cardview-v7:$supportLibVersion"
     implementation "com.android.support:recyclerview-v7:$supportLibVersion"
-    implementation "com.android.support:support-annotations:$supportLibVersion"
     implementation "com.android.support:design:$supportLibVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
@@ -109,8 +110,6 @@ dependencies {
     implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

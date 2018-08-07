@@ -138,8 +138,10 @@ public class SearchFragment extends Fragment {
     String firstCity = tilFirstCity.getEditText().getText().toString();
     String secondCity = tilSecondCity.getEditText().getText().toString();
 
-    tilFirstCity.setError(TextUtils.isEmpty(firstCity) ? "You must enter a city name" : null);
-    tilSecondCity.setError(TextUtils.isEmpty(secondCity) ? "You must enter a city name" : null);
+    String error = getString(R.string.city_name_required);
+
+    tilFirstCity.setError(TextUtils.isEmpty(firstCity) ? error : null);
+    tilSecondCity.setError(TextUtils.isEmpty(secondCity) ? error : null);
 
     if (!TextUtils.isEmpty(firstCity) && !TextUtils.isEmpty(secondCity)) {
       String[] split1 = firstCity.split(",");

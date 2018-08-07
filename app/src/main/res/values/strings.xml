@@ -17,4 +17,10 @@
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
     <string name="widget_leprechaun_bookmarks">Leprechaun Bookmarks</string>
+
+    <string name="city_name_required">You must enter a city name</string>
+    <string name="cd_bookmark_remove">remove bookmark</string>
+    <string name="cd_bookmark">bookmark</string>
+
+    <string name="city_vs">%1$s vs %2$s</string>
 </resources>
